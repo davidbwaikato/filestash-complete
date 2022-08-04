@@ -7,22 +7,27 @@ if [ ! -d go-all ] ; then
     echo "    go-all"
     mkdir go-all
     
-    sudo echo 'export GOPATH=/$PWD/go-all' >> ~/.profile
-    sudo echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> ~/.profile
-    sudo echo 'export CGO_LDFLAGS_ALLOW='-fopenmp'' >> ~/.profile
+    echo "export GOPATH=$PWD/go-all" >> ~/.profile
+    echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> ~/.profile
+    echo 'export CGO_LDFLAGS_ALLOW='-fopenmp'' >> ~/.profile
+    echo 'echo "Set GOPATH=$GOPATH"' >> ~/.profile
+    echo 'echo "Updated PATH to include /usr/local/go/bin"' >> ~/.profile
 fi
 source ~/.profile
 
 mkdir -p $GOPATH/src/github.com/mickael-kerjean/
 
-mkdir $GOPATH/deps && cd $GOPATH/deps
+if [ ! -d $GOPATH/deps ] ; then
+    mkdir $GOPATH/deps
+fi
+cd $GOPATH/deps
 
-if [ ! -f libvips.tar.gz ] ; then
-    curl -L -X GET https://github.com/libvips/libvips/releases/download/v8.7.0/vips-8.7.0.tar.gz > libvips.tar.gz
+if [ ! -f vips-8.7.0.tar.gz ] ; then
+    curl -L -X GET https://github.com/libvips/libvips/releases/download/v8.7.0/vips-8.7.0.tar.gz > vips-8.7.0.tar.gz
 fi
 
 if [ ! -d vips-8.7.0 ] ; then
-    tar -zxf libvips.tar.gz
+    tar -zxf vips-8.7.0.tar.gz
 fi
 
 cd vips-8.7.0/
@@ -37,12 +42,12 @@ sudo make install
 
 cd $GOPATH/deps
 
-if [ ! -f libraw.tar.gz ] ; then
-    curl -X GET https://www.libraw.org/data/LibRaw-0.19.0.tar.gz > libraw.tar.gz
+if [ ! -f LibRaw-0.19.0.tar.gz ] ; then
+    curl -X GET https://www.libraw.org/data/LibRaw-0.19.0.tar.gz > LibRaw-0.19.0.tar.gz
 fi
 
 if [ ! -d LibRaw-0.19.0 ] ; then
-    tar -zxf libraw.tar.gz
+    tar -zxf libraw-0.19.0.tar.gz
 fi
 
 cd LibRaw-0.19.0/
@@ -55,9 +60,22 @@ sudo make install
 
 cd $GOPATH/src/github.com/mickael-kerjean
 
-git clone --depth 1 https://github.com/davidbwaikato/filestash
+if [ ! -d filestash ] ; then
+    git clone --depth 1 https://github.com/davidbwaikato/filestash
+fi
 
 cd filestash
+
+#cd server/plugins/plg_image_light
+#cd deps
+#gcc -Wall -c src/libtranscode.c
+#ar rcs libtranscode.a libtranscode.o 
+
+#gcc -Wall -c src/libresize.c
+#ar rcs libresize.a libresize.o 
+
+#cd ../../..
+
 
 mkdir -p ./dist/data/
 
@@ -75,6 +93,7 @@ go get
 
 cd ..
 
+go generate -x ./server/...
 go build -ldflags "-X github.com/mickael-kerjean/filestash/server/common.BUILD_NUMBER=`date -u +%Y%m%d`" -o ./dist/filestash ./server/main.go
 
 mkdir -p ./dist/data/plugin

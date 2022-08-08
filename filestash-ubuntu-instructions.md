@@ -28,7 +28,17 @@ First install go like so (to the /usr/local directory):
 
     sudo apt-get install build-essential pkg-config curl gcc g++ make git
 
+    # Install "PEM files of CA certificates to allow SSL-based applications to check 
+    # for the authenticity of SSL connections"    
+    sudo apt-get install ca-certificates
 
+    # The following are utils are used on a running filestash server (from Dockerfile)
+    sudo apt-get install tor emacs-nox ffmpeg zip poppler-utils
+
+    # The following utils are used to install tinytex on Docker server image (from Dockerfile)
+    # => so needed here on host 
+    sudo apt-get wget perl
+ 
 Then run the sh script (ubuntu-build-all.sh) to install filestash. The
 executable will be located at /app and the source code at
 $GOPATH/src/github.com/mickael-kerjean/filestash/

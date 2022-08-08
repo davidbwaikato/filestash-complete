@@ -15,8 +15,7 @@ fi
 
 cd filestash
 
-cd server/plugin/plg_image_light
-cd deps
+cd server/plugin/plg_image_light/deps
 
 GLIB_CFLAGS=`pkg-config --cflags glib-2.0`
 #GLIB_LDFLAGS=`pkg-config --libs glib-2.0`
@@ -31,11 +30,13 @@ gcc -Wall $GLIB_CFLAGS -c src/libresize.c
 /bin/rm -f libresize.a
 ar rcs libresize.a libresize.o 
 
-cd ..
-cd ../../..
+cd ../../../..
 
 echo "Pausing for 5 seconds ... ^C is above failed"
 sleep 5
+
+# CWD = top-level filestash git-clone source code
+pwd
 
 mkdir -p ./dist/data/
 
@@ -45,7 +46,8 @@ npm install
 
 npm rebuild node-sass
 
-NODE_ENV=production npm run build
+# NODE_ENV=production npm run build
+make build_frontend
 
 echo "Pausing for 5 seconds ... ^C is above failed"
 sleep 5
@@ -56,10 +58,14 @@ go get
 
 cd ..
 
-go generate -x ./server/...
-go build -ldflags "-X github.com/mickael-kerjean/filestash/server/common.BUILD_NUMBER=`date -u +%Y%m%d`" -o ./dist/filestash ./server/main.go
+# go generate -x ./server/...
+make build_init
 
-mkdir -p ./dist/data/plugin
+
+# go build -ldflags "-X github.com/mickael-kerjean/filestash/server/common.BUILD_NUMBER=`date -u +%Y%m%d`" -o ./dist/filestash ./server/main.go
+make build_backend
+
+#mkdir -p ./dist/data/plugin
 
 #echo "***"
 #echo "*** Supressing plg_image_light"

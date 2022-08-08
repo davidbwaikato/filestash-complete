@@ -30,38 +30,7 @@ fi
 
 ./ubuntu-build-packages.sh
 
-./ubuntu-build-fileshash.sh
+./ubuntu-build-filestash.sh
 
-sudo apt-get install emacs texlive texlive-base texlive-latex-extra zip
 
-sudo chmod 777 /usr/share/texlive/texmf-dist/tex/latex/base/
-
-sudo curl https://raw.githubusercontent.com/mickael-kerjean/filestash_latex/master/wrapfig.sty > /usr/share/texlive/texmf-dist/tex/latex/base/wrapfig.sty
-
-sudo curl https://raw.githubusercontent.com/mickael-kerjean/filestash_latex/master/capt-of.sty > /usr/share/texlive/texmf-dist/tex/latex/base/capt-of.sty
-
-sudo curl https://raw.githubusercontent.com/mickael-kerjean/filestash_latex/master/sectsty.sty > /usr/share/texlive/texmf-dist/tex/latex/base/sectsty.sty
-
-sudo texhash
-
-sudo find /usr/share/emacs -name '*.pbm' | sudo xargs rm
-
-sudo find /usr/share/emacs -name '*.png' | sudo xargs rm
-
-sudo find /usr/share/emacs -name '*.xpm' | sudo xargs rm
-
-sudo rm -rf /usr/share/texmf-dist/doc
-
-cd $GOPATH/src/github.com/mickael-kerjean/filestash/
-
-sudo apt-get install ca-certificates
-
-sudo mv dist /app
-
-cd /app
-
-echo "Opening up port: 8334"
-sudo ufw allow 8334
-
-echo "Running filestash server"
-./filestash
+./ubuntu-build-postinstall.sh

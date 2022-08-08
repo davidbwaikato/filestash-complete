@@ -1,10 +1,8 @@
 #!/bin/bash
 
-
-if ["x$GOPATH" == "x" ] ; then
+if [ "x$GOPATH" == "x" ] ; then
     . ./SETUP.bash
 fi
-
 
 # The following primarily installs 'tinytex' as a light-weight way
 # to run pdflatex
